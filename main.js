@@ -49,6 +49,9 @@ var readQualifyingTimes = function(results, raceNum) {
             teams[driverName] = results.QualifyingResults[time].Constructor.name;
         }
     }
+
+    //Remove GIO from leaderboards
+    delete leaderboard['GIO'];
 };
 
 var formatTiming = function(time) {
@@ -85,7 +88,10 @@ var displayLeaderboard = function(data) {
             <th class="driver">${data[time]}</th>
             <th class="driver">${teams[data[time]]}</th>
             <th class="time">${(leaderboard[data[time]]).toFixed(3)}</th>
-            <th class="status"></th>
+            <th class="status">
+                <img style="width:25%" src="minus.svg">
+                <span style="margin-left:10px">0</span>
+            </th>
         </tr>`;
     }
 };
