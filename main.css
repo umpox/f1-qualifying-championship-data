@@ -1,0 +1,23 @@
+#leaderboard {
+    max-width: 500px;
+}
+
+.position {
+    max-width: 35px;
+    text-align: center;
+}
+.driver {
+    max-width: 40px;
+}
+.team {
+    max-width: 70px;
+}
+.time {
+    max-width: 40px;
+}
+.status {
+    max-width: 35px;
+    text-align: center;
+}
+.statusUp {
+}
