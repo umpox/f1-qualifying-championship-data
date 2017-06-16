@@ -1,7 +1,6 @@
-#leaderboard {
+#leaderboard, #driverComparison {
     max-width: 500px;
 }
-
 .position {
     max-width: 35px;
     text-align: center;
@@ -20,4 +19,20 @@
     text-align: center;
 }
 .statusUp {
+}
+
+#driverComparison th.raceName {
+    text-align: center;
+}
+#driverComparison .raceName {
+    max-width: 160px;
+}
+#comparisonBody .difference {
+    text-align: center;
+}
+.difference {
+    max-width: 80px;
+}
+.driver1, .driver2 {
+    max-width: 70px;
 }
