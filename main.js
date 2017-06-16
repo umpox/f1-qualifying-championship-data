@@ -1,8 +1,16 @@
 var leaderboard = {};
 var participation = {};
 var teams = {};
+var driver1Area = document.getElementsByClassName('driver1')[0];
+var driver2Area = document.getElementsByClassName('driver2')[0];
+var leaderboardComparison = document.getElementById('leaderboard');
+var driverComparison = document.getElementById('driverComparison');
 
 var getQualifyingData = function(raceNum) {
+
+    //Display leaderboard
+    leaderboardComparison.classList.remove('hidden');
+
     fetch(`http://ergast.com/api/f1/2017/0${raceNum}/qualifying.json`)
     .then((response) => response.json())
     .then(function(qualifyingData) {
@@ -10,21 +18,70 @@ var getQualifyingData = function(raceNum) {
     });
 };
 
+var compareDriverTimes = function(raceNum, driv1, driv2) {
+    //Display leaderboard
+    driverComparison.classList.remove('hidden');
+
+    driver1Area.innerHTML = driv1;
+    driver2Area.innerHTML = driv2;
+  
+    fetch(`http://ergast.com/api/f1/2017/0${raceNum}/qualifying.json`)
+    .then((response) => response.json())
+    .then(function(qualifyingData) {
+        getDriverTimes(qualifyingData.MRData.RaceTable.Races[0], raceNum, driv1, driv2);
+    });
+};
+
+var getDriverTimes = function(results, raceNum, driv1, driv2) {
+    var driverName;
+    var driv1Time;
+    var driv2Time;
+    var differenceTime;
+    var differenceStyle;
+    var differenceType;
+    var comparisonArea = document.getElementById('comparisonBody');
+    var raceName = results.raceName;
+
+    for (var time in results.QualifyingResults) {
+        //Save driver name
+        driverName = results.QualifyingResults[time].Driver.code;
+
+        if (driverName == driv1) {
+            driv1Time = (findFastestTime(time, results)).toFixed(3);
+        }
+        else if (driverName == driv2) {
+            driv2Time = (findFastestTime(time, results)).toFixed(3);
+        }
+    }
+
+    differenceTime = (driv2Time - driv1Time).toFixed(3);
+
+    //Check if difference is negative
+    if (differenceTime < 0) {
+        differenceStyle = 'color: #01b729';
+        differenceType = '';
+    }
+    else {
+        differenceStyle = 'color: #D80027';    
+        differenceType = '+';    
+    }
+
+    comparisonArea.innerHTML = comparisonArea.innerHTML + 
+    `<tr>
+        <th class="raceName">${raceName}</th>
+        <th class="driver1">${driv1Time}</th>
+        <th class="driver2">${driv2Time}</th>
+        <th style="${differenceStyle}" class="difference">${differenceType}${differenceTime}</th>
+    </tr>`;  
+};
+
 var readQualifyingTimes = function(results, raceNum) {
     var driverTime;
     var driverName;
     for (var time in results.QualifyingResults) {
 
-        //Find fastest driver time from Q1,Q2,Q3
-        if (results.QualifyingResults[time].Q3 !== undefined) {
-            driverTime = formatTiming(results.QualifyingResults[time].Q3);
-        }
-        else if (results.QualifyingResults[time].Q2 !== undefined) {
-            driverTime = formatTiming(results.QualifyingResults[time].Q2);
-        }
-        else if (results.QualifyingResults[time].Q1 !== undefined) {
-            driverTime = formatTiming(results.QualifyingResults[time].Q1);
-        }
+        driverTime = findFastestTime(time, results);
+
         //Save driver name
         driverName = results.QualifyingResults[time].Driver.code;
 
@@ -54,7 +111,28 @@ var readQualifyingTimes = function(results, raceNum) {
     delete leaderboard['GIO'];
 };
 
+var findFastestTime = function(time, results) {
+    driverTime = 0;
+
+    //Find fastest driver time from Q1,Q2,Q3
+    if (results.QualifyingResults[time].Q1 !== undefined) {
+        driverTime = formatTiming(results.QualifyingResults[time].Q1);
+    }
+    if (formatTiming(results.QualifyingResults[time].Q2) < driverTime) {
+        driverTime = formatTiming(results.QualifyingResults[time].Q2);        
+    }
+    if (formatTiming(results.QualifyingResults[time].Q3) < driverTime) {
+        driverTime = formatTiming(results.QualifyingResults[time].Q3);        
+    }
+
+    return driverTime;
+};
+
 var formatTiming = function(time) {
+    if (time === undefined) {
+        return;
+    }
+
     var minutes = Number(time.split(':')[0]);
     var seconds = Number(time.split(':')[1]);
 
@@ -96,12 +174,26 @@ var displayLeaderboard = function(data) {
     }
 };
 
+var compareDrivers = function (races, driv1, driv2) {
+    var i = 1;
+    var executionProcess = setInterval(function(){
+        compareDriverTimes(i, driv1, driv2);
+        i++;
+        if (counter === races) {
+            clearInterval(executionProcess);
+        }
+    }, 500);
+};
 
-getQualifyingData(1);
-getQualifyingData(2);
-getQualifyingData(3);
-getQualifyingData(4);
-getQualifyingData(5);
+var qualifyingData = function(races) {
+    for (var i=1; i < races; i++) {
+        getQualifyingData(i);
+    }
 
-setTimeout(calculateAverageTimes, 1000);
+    setTimeout(calculateAverageTimes, 1000);        
+};
 
+//Area to call functions
+compareDrivers(7, 'MAS', 'STR');
+
+//qualifyingData(7);
