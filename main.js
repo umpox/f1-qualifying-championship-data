@@ -194,6 +194,7 @@ var qualifyingData = function(races) {
 };
 
 //Area to call functions
-compareDrivers(7, 'MAS', 'STR');
+//TODO::::: ADD % DIFFERENCE BETWEEN TIMES TO ACCOUNT FOR TRACK DIFFERENCES
+compareDrivers(7, 'HAM', 'VET');
 
 //qualifyingData(7);
