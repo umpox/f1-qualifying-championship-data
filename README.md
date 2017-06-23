@@ -2,5 +2,7 @@
 Script to generate timing data for F1 qualifying
 
 ## Example Screenshots:
-| ![Comparison](http://i.imgur.com/7koFATZ.png)| ![Championship](http://i.imgur.com/FjdfW2m.png)|
+| ![HULPAL](http://i.imgur.com/7koFATZ.png)| ![HAMVET](http://i.imgur.com/aqaO1nO.png)|
 |:---:|:---:|
+
+![Championship](http://i.imgur.com/FjdfW2m.png)|
